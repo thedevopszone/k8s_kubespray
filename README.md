@@ -8,7 +8,10 @@
 git clone https://github.com/kubernetes-sigs/kubespray.git
 cd kubespray
 
-sudo pip3 install -r requirements.txt
+virtualenv venv
+source venv/bin/activate
+
+pip3 install -r requirements.txt
 
 ```
 
