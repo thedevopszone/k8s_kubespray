@@ -25,6 +25,8 @@ cp -rfp inventory/sample inventory/mycluster
 ```
 declare -a IPS=(10.10.1.3 10.10.1.4 10.10.1.5)
 CONFIG_FILE=inventory/mycluster/hosts.yaml python3 contrib/inventory_builder/inventory.py ${IPS[@]}
+
+ansible-playbook -i inventory/mycluster/hosts.yaml  --user root upgrade-cluster.yml
 ```
 
 
