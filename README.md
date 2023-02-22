@@ -20,6 +20,18 @@ cp -rfp inventory/sample inventory/mycluster
 ```
 
 
+```
+declare -a IPS=(172.16.0.153 172.16.0.167 172.16.0.213 172.16.0.250 172.16.0.206 172.16.0.126 172.16.0.128)
+CONFIG_FILE=inventory/mycluster/hosts.yaml python3 contrib/inventory_builder/inventory.py ${IPS[@]}
+ansible-playbook -i inventory/mycluster/hosts.yaml  --become --become-user=root cluster.yml
+
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+```
+
+
+
 
 # Update Ansible inventory file with inventory builder
 ```
