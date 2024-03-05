@@ -12,6 +12,7 @@
 ```
 git clone https://github.com/kubernetes-sigs/kubespray.git
 cd kubespray
+git checkout tags/v2.23.0
 
 virtualenv venv
 source venv/bin/activate
