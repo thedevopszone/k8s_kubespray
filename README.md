@@ -15,26 +15,91 @@ cd kubespray
 git checkout tags/v2.24.1
 
 virtualenv venv
+# or
+python3 -m venv kubespray-venv
+
+source kubespray-venv/bin/activate
 source venv/bin/activate
 
 pip3 install -r requirements.txt
+pip3 install -U -r requirements.txt
 
 ```
 
 ```
 cp -rfp inventory/sample inventory/mycluster
+cp -rfp inventory/sample inventory/proxmox01
 ```
 
 
 ```
 declare -a IPS=(172.16.0.153 172.16.0.167 172.16.0.213 172.16.0.250 172.16.0.206 172.16.0.126 172.16.0.128)
 CONFIG_FILE=inventory/mycluster/hosts.yaml python3 contrib/inventory_builder/inventory.py ${IPS[@]}
+
+rename node names in config: inventory/proxmox01/hosts.yaml
+Also configure 3 Master and 3 etcd
+
+create a variable file to pass when we execute
+vi inventory/proxmox01/sample/cluster-variable.yaml
+kube_version: v1.27.5
+helm_enabled: true
+kube_proxy_mode: iptables
+# Metallb comments
+
+ansible-playbook -i inventory/proxmox01/hosts.yaml -e @inventory/proxmox01/custer-variable.yaml --become --become-user=root -u ansible cluster.yml
+
+
+
+
 ansible-playbook -i inventory/mycluster/hosts.yaml  --become --user=root cluster.yml
 
 mkdir -p $HOME/.kube
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
 ```
+
+
+# Install Metallb
+
+```
+kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.13.12/manifests/metallb-native.yaml
+```
+
+```
+mkdir inventory/proxmox01/metallb
+```
+
+
+vi IPAddressPool.yaml
+```
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: first-pool
+  namespace: metallb-system
+spec:
+  addresses:
+  - 172.16.43.1-172.16.43.128
+```
+
+vi I2advertisement.yaml
+```
+apiVersion: metallb.io/v1beta1
+kind: L2Advertisement
+metadata:
+  name: default-advertisement
+  namespace: metallb-system
+```
+
+```
+kubectl apply -f ./inventory/proxmox01/metallb/
+
+kubectl get svc
+```
+
+
+
+
 
 
 
