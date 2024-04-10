@@ -22,6 +22,18 @@ sudo apt install kubectl
 ```
 
 
+## Helm
+
+```
+wget https://get.helm.sh/helm-v3.12.0-linux-amd64.tar.gz
+tar -xvf  helm-v3.12.0-linux-amd64.tar.gz
+rm helm-v3.12.0-linux-amd64.tar.gz
+cd linux-amd64
+sudo mv helm  /usr/local/bin/
+cd ..
+rm -rf linux-amd64
+```
+
 ## Repo
 
 
